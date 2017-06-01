@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import {Field, reduxForm} from 'redux-form';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { createPost } from '../actions';
 
 class PostsNew extends Component {
 
@@ -19,9 +22,12 @@ class PostsNew extends Component {
       </div>
     )
   }
-
+  // attaching a callback function
   onFormSubmit = (values) => {
-    console.log(values);
+    this.props.createPost(values, () => {
+      this.props.history.push("/");
+    });
+    
   }
 
   render() {
@@ -34,7 +40,11 @@ class PostsNew extends Component {
           <Field name="categories" component={this.renderField} customLabel="Categories"/>
 
           <Field name="content" component={this.renderField} customLabel="Post Content"/>
+
           <button className="btn btn-primary" type="submit">Submit</button>
+          <Link to="/">
+            <button className="btn btn-danger">Cancel</button>
+          </Link>
         </form>
       </div>
     );
@@ -60,4 +70,4 @@ function validate(values) {
 
 // put in unique string for form:'unique string' these only need to match if we
 // have a multi-page form and we need to share data
-export default reduxForm({validate, form: 'PostsNewForm'})(PostsNew);
+export default reduxForm({validate, form: 'PostsNewForm'})(connect(null, { createPost })(PostsNew));
